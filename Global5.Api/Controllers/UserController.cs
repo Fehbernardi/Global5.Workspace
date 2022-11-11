@@ -90,6 +90,9 @@ namespace Global5.Api.Controllers
         [HttpPut( "{userId:long}" )]
 		public async Task<bool> Update(long userId, User user)
 		{
+			// caso o usuario não exista
+			if (!Get(new UserSearch { Id = userId }).Any()) return false;
+
 			user.Id= userId;
 
 			var result = ApplicationContext.Update<User>( user ).State == EntityState.Modified;
@@ -106,6 +109,9 @@ namespace Global5.Api.Controllers
         [HttpDelete( "{userId:long}" )]
 		public async Task<bool> Del(long userId)
 		{
+			// caso o usuario não exista
+			if (!Get(new UserSearch { Id = userId }).Any()) return false;
+
 			var result = ApplicationContext.Remove(ApplicationContext.Users.Single( x => x.Id == userId )).State == EntityState.Deleted;
                 
             await ApplicationContext.SaveChangesAsync().ConfigureAwait( false );
